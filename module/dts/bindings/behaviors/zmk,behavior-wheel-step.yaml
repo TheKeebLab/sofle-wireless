@@ -1,0 +1,5 @@
+description: One mouse-wheel step per press. Param 1 is the signed step (positive = up).
+
+compatible: "zmk,behavior-wheel-step"
+
+include: one_param.yaml

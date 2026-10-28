@@ -1,0 +1,16 @@
+/*
+ * Screen brightness key (behavior_screen_brightness.c), shared by every TheKeebLab wireless keymap:
+ * each press steps both screens to high, medium, low, then high again. The level
+ * is kept through sleep and switch-off.
+ */
+
+/ {
+    behaviors {
+        // A split peripheral looks behaviors up by node name: 8 characters at most.
+        scr_bri: scr_bri {
+            compatible = "zmk,behavior-screen-brightness";
+            #binding-cells = <0>;
+            display-name = "Screen brightness";
+        };
+    };
+};

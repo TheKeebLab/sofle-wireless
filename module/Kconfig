@@ -1,0 +1,9 @@
+config ZMK_BEHAVIOR_WHEEL_STEP
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_WHEEL_STEP_ENABLED && ZMK_POINTING
+
+config ZMK_BEHAVIOR_SCREEN_BRIGHTNESS
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_SCREEN_BRIGHTNESS_ENABLED

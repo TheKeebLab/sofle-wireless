@@ -1,0 +1,6 @@
+name: tkl-zmk
+build:
+  cmake: module
+  kconfig: module/Kconfig
+  settings:
+    dts_root: module

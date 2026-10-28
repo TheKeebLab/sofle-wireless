@@ -1,0 +1,64 @@
+/*
+ * Switch-off and wake-up shared by every TheKeebLab wireless keymap. The keymap
+ * defines first:
+ * - TKL_WAKE_ROW, TKL_WAKE_COL: pro_micro pins of the top outer corner key (the
+ *   wake-up key), the same on both halves;
+ * - TKL_OFF_KEYS: key positions of the left half's top-left and bottom-left keys.
+ *
+ * Switch-off = press both together on the base layer and hold: nothing happens for
+ * 2 s (letting go of either key, or any other key, before then cancels), then
+ * &soft_off switches the right half off at once and the left half when both keys
+ * are up (slow-release: the top-left key is the left half's wake-up key,
+ * so the half must not switch off while it is still held). The keys must be on the
+ * left half: the right half is off before its keys could send their release.
+ */
+
+#include <dt-bindings/gpio/gpio.h>
+
+/ {
+    behaviors {
+        tkl_off: tkl_off {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <2000>;
+            // No key counts as a hold trigger, so any key released before 2 s
+            // (one of the two, or another) makes it a tap: nothing happens.
+            hold-trigger-key-positions = <999>;
+            hold-trigger-on-release;
+            bindings = <&soft_off>, <&none>;
+        };
+    };
+
+    combos {
+        compatible = "zmk,combos";
+
+        tkl_switch_off {
+            key-positions = <TKL_OFF_KEYS>;
+            bindings = <&tkl_off 0 0>;
+            layers = <0>;
+            slow-release;
+            require-prior-idle-ms = <150>;
+        };
+    };
+
+    tkl_wake_keys {
+        compatible = "gpio-keys";
+
+        tkl_wake_key: tkl_wake_key {
+            gpios = <&pro_micro TKL_WAKE_ROW (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
+        };
+    };
+
+    tkl_wake: tkl_wake {
+        compatible = "zmk,gpio-key-wakeup-trigger";
+        trigger = <&tkl_wake_key>;
+        wakeup-source;
+        extra-gpios = <&pro_micro TKL_WAKE_COL GPIO_ACTIVE_HIGH>;
+    };
+
+    tkl_soft_off_wakers {
+        compatible = "zmk,soft-off-wakeup-sources";
+        wakeup-sources = <&tkl_wake>;
+    };
+};

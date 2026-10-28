@@ -1,0 +1,5 @@
+description: Screen brightness key. Each press steps both screens to the next level, high, medium, low, high.
+
+compatible: "zmk,behavior-screen-brightness"
+
+include: zero_param.yaml

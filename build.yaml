@@ -1,0 +1,51 @@
+---
+# What .github/workflows/build.yml builds: both halves of every layout, then the
+# settings reset. Remove the entries you don't need to build faster.
+include:
+  - board: nice_nano_v2
+    shield: sofle_left
+    snippet: studio-rpc-usb-uart
+    cmake-args: -DCONFIG_ZMK_STUDIO=y
+    artifact-name: sofle-wireless-qwerty-us-left
+  - board: nice_nano_v2
+    shield: sofle_right
+    artifact-name: sofle-wireless-qwerty-us-right
+  - board: nice_nano_v2
+    shield: sofle_left
+    snippet: studio-rpc-usb-uart
+    cmake-args: -DCONFIG_ZMK_STUDIO=y -DKEYMAP_FILE=@ZMK_CONFIG@/sofle-azerty-fr.keymap
+    artifact-name: sofle-wireless-azerty-fr-left
+  - board: nice_nano_v2
+    shield: sofle_right
+    cmake-args: -DKEYMAP_FILE=@ZMK_CONFIG@/sofle-azerty-fr.keymap
+    artifact-name: sofle-wireless-azerty-fr-right
+  - board: nice_nano_v2
+    shield: sofle_left
+    snippet: studio-rpc-usb-uart
+    cmake-args: -DCONFIG_ZMK_STUDIO=y -DKEYMAP_FILE=@ZMK_CONFIG@/sofle-qwertz-de.keymap
+    artifact-name: sofle-wireless-qwertz-de-left
+  - board: nice_nano_v2
+    shield: sofle_right
+    cmake-args: -DKEYMAP_FILE=@ZMK_CONFIG@/sofle-qwertz-de.keymap
+    artifact-name: sofle-wireless-qwertz-de-right
+  - board: nice_nano_v2
+    shield: sofle_left
+    snippet: studio-rpc-usb-uart
+    cmake-args: -DCONFIG_ZMK_STUDIO=y -DKEYMAP_FILE=@ZMK_CONFIG@/sofle-qwerty-it.keymap
+    artifact-name: sofle-wireless-qwerty-it-left
+  - board: nice_nano_v2
+    shield: sofle_right
+    cmake-args: -DKEYMAP_FILE=@ZMK_CONFIG@/sofle-qwerty-it.keymap
+    artifact-name: sofle-wireless-qwerty-it-right
+  - board: nice_nano_v2
+    shield: sofle_left
+    snippet: studio-rpc-usb-uart
+    cmake-args: -DCONFIG_ZMK_STUDIO=y -DKEYMAP_FILE=@ZMK_CONFIG@/sofle-qwerty-es.keymap
+    artifact-name: sofle-wireless-qwerty-es-left
+  - board: nice_nano_v2
+    shield: sofle_right
+    cmake-args: -DKEYMAP_FILE=@ZMK_CONFIG@/sofle-qwerty-es.keymap
+    artifact-name: sofle-wireless-qwerty-es-right
+  - board: nice_nano_v2
+    shield: settings_reset
+    artifact-name: sofle-wireless-settings-reset
