@@ -33,8 +33,9 @@ static const uint8_t levels[] = {255, 128, 32};
 
 static uint8_t picked; /* 0 = the key was never pressed */
 static uint8_t designed = DRIVER_DEFAULT;
+static uint8_t held; /* 0 = not held */
 
-static uint8_t shown(void) { return picked ? picked : designed; }
+static uint8_t level(void) { return picked ? picked : designed; }
 
 static uint8_t next_level(uint8_t now) {
     for (size_t i = 0; i < ARRAY_SIZE(levels); i++) {
@@ -46,6 +47,8 @@ static uint8_t next_level(uint8_t now) {
 }
 
 #if IS_ENABLED(CONFIG_ZMK_DISPLAY) && DT_HAS_CHOSEN(zephyr_display)
+
+static uint8_t shown(void) { return held ? held : level(); }
 
 static void apply_now(void) {
     const struct device *dev = DEVICE_DT_GET(DT_CHOSEN(zephyr_display));
@@ -71,11 +74,18 @@ void tkl_brightness_use(uint8_t value) {
     apply_now();
 }
 
+void tkl_brightness_hold(uint8_t value) {
+    held = value;
+    apply_now();
+}
+
 #else
 
 static void apply(void) {}
 
 void tkl_brightness_use(uint8_t value) { designed = value; }
+
+void tkl_brightness_hold(uint8_t value) { held = value; }
 
 #endif
 
@@ -114,14 +124,14 @@ SETTINGS_STATIC_HANDLER_DEFINE(tkl_brightness, "tkl/brightness", NULL, brightnes
 static int on_convert(struct zmk_behavior_binding *binding,
                       struct zmk_behavior_binding_event event) {
     if (!(binding->param1 & PICKED)) {
-        binding->param1 = PICKED | next_level(shown());
+        binding->param1 = PICKED | next_level(level());
     }
     return 0;
 }
 
 static int on_brightness_pressed(struct zmk_behavior_binding *binding,
                                  struct zmk_behavior_binding_event event) {
-    picked = (binding->param1 & PICKED) ? binding->param1 & 0xFF : next_level(shown());
+    picked = (binding->param1 & PICKED) ? binding->param1 & 0xFF : next_level(level());
     apply();
 #if IS_ENABLED(CONFIG_SETTINGS)
     k_work_reschedule(&save_work, SAVE_DELAY);
